@@ -8,6 +8,8 @@ from .buffer import ActivationBuffer
 import os
 from tqdm import tqdm
 
+import wandb
+
 EPS = 1e-8
 
 class ConstrainedAdam(t.optim.Adam):
@@ -210,6 +212,11 @@ def trainSAE(
                 else:
                     mse_loss, sparsity_loss, ghost_loss = losses
                     print(f"step {step} MSE loss: {mse_loss}, sparsity loss: {sparsity_loss}, ghost_loss: {ghost_loss}")
+
+                    if ghost_loss is None:
+                        wandb.log({"mse_acc": mse_loss, "sparsity_loss": sparsity_loss, 'ghost_loss': 0.0})
+                    else:
+                        wandb.log({"mse_acc": mse_loss, "sparsity_loss": sparsity_loss, 'ghost_loss': ghost_loss})
                 # dict_acts = ae.encode(acts)
                 # print(f"step {step} % inactive: {(dict_acts == 0).all(dim=0).sum() / dict_acts.shape[-1]}")
                 # if isinstance(activations, ActivationBuffer):
