@@ -3,12 +3,12 @@ import zstandard as zstd
 import io
 import json
 
-def hf_dataset_to_generator(dataset_name, split='train', streaming=True):
+def hf_dataset_to_generator(dataset_name, split='train', streaming=True, item_key='text'):
     dataset = load_dataset(dataset_name, split=split, streaming=streaming)
     
     def gen():
         for x in iter(dataset):
-            yield x['text']
+            yield x[item_key]
     
     return gen()
 
